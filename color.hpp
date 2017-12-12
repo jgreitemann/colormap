@@ -19,6 +19,8 @@ namespace color {
     struct color<space::grayscale, T> {
         static T depth () { return std::numeric_limits<T>::max(); }
 
+        color (T v = 0) : val(v) {}
+
         color mix (color const& other, double mix) const {
             return { T(other.val * mix + val * (1. - mix)) };
         }
@@ -31,6 +33,7 @@ namespace color {
             os << long(c.val) << ' ';
             return os;
         }
+    private:
         T val;
     };
 
@@ -38,11 +41,15 @@ namespace color {
     struct color<space::rgb, T> {
         static T depth () { return std::numeric_limits<T>::max(); }
 
+        color () : channels {{ {}, {}, {} }} {}
+
+        color (T r, T g, T b) : channels {{ {r}, {g}, {b} }} {}
+
         color mix (color const& other, double mix) const {
-            decltype(channels) mixed_channels;
+            color mixed;
             for (size_t i = 0; i < channels.size(); ++i)
-                mixed_channels[i] = channels[i].mix(other.channels[i], mix);
-            return { mixed_channels };
+                mixed.channels[i] = channels[i].mix(other.channels[i], mix);
+            return mixed;
         }
 
         std::ostream & write (std::ostream & os) const {
@@ -56,6 +63,7 @@ namespace color {
                 os << ch;
             return os;
         }
+    private:
         std::array<color<space::grayscale,T>,3> channels;
     };
 
