@@ -43,7 +43,7 @@ namespace color {
             auto b = supports.upper_bound(x);
             if (a == supports.end())
                 return (--a)->second;
-            if (b == supports.end() || a == supports.begin())
+            if (b == supports.end() || a == supports.begin() || a->first == x)
                 return a->second;
             --a;
             double mix = (x - a->first) / (b->first - a->first);
