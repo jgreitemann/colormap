@@ -21,6 +21,10 @@ namespace color {
 
         color (T v = 0) : val(v) {}
 
+        template <typename Float,
+                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+        color (Float v) : val(v * depth()) {}
+
         color mix (color const& other, double mix) const {
             return { T(other.val * mix + val * (1. - mix)) };
         }
@@ -44,6 +48,10 @@ namespace color {
         color () : channels {{ {}, {}, {} }} {}
 
         color (T r, T g, T b) : channels {{ {r}, {g}, {b} }} {}
+
+        template <typename Float,
+                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+        color (Float r, Float g, Float b) : channels {{ {r}, {g}, {b}}} {}
 
         color mix (color const& other, double mix) const {
             color mixed;
