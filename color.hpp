@@ -12,12 +12,13 @@ namespace color {
         rgb
     };
 
-    template <space cs, typename T = std::uint8_t>
+    template <space, typename = std::uint8_t>
     struct color;
 
     template <typename T>
     struct color<space::grayscale, T> {
         static T depth () { return std::numeric_limits<T>::max(); }
+        static space color_space () { return space::grayscale; }
 
         color (T v = 0) : val(v) {}
 
@@ -44,6 +45,7 @@ namespace color {
     template <typename T>
     struct color<space::rgb, T> {
         static T depth () { return std::numeric_limits<T>::max(); }
+        static space color_space () { return space::rgb; }
 
         color () : channels {{ {}, {}, {} }} {}
 

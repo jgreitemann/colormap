@@ -6,6 +6,8 @@
 #include <iostream>
 #include <utility>
 
+#include <boost/multi_array.hpp>
+
 
 int main () {
     size_t max_it = 1000;
@@ -18,17 +20,8 @@ int main () {
     auto pal = color::palettes.at("inferno").rescale(1, func(max_it));
     auto black = pal(0.);
 
-    std::string header = [&] {
-        std::stringstream ss;
-        ss << "P6\n"
-        << dim.first << ' ' << dim.second << '\n'
-        << size_t(decltype(pal)::color_type::depth())
-        << '\n';
-        return ss.str();
-    } ();
-    std::ofstream os("appleman.ppm");
-    os.write(header.c_str(), header.size());
-
+    using color_t = typename decltype(pal)::color_type;
+    boost::multi_array<color_t,2> pixs(boost::extents[dim.second][dim.first]);
     for (size_t j = 0; j < dim.second; ++j) {
         for (size_t i = 0; i < dim.first; ++i) {
             std::complex<double> c = {canvas.first.first + i * delta.first,
@@ -40,11 +33,25 @@ int main () {
             if (it < max_it) {
                 double log2_z = log(std::norm(z)) * 0.5 / log(2);
                 double nu = log(log2_z) / log(2);
-                pal(func(it + 1 - nu)).write(os);
+                pixs[j][i] = pal(func(it + 1 - nu));
             } else {
-                black.write(os);
+                pixs[j][i] = black;
             }
         }
+    }
+
+    boost::array<typename decltype(pixs)::index,2> dims = {{1, dim.first * dim.second}};
+    pixs.reshape(dims);
+    auto flat_it = pixs.begin()->begin();
+    color::pixmap<decltype(flat_it)> pmap(flat_it, dim);
+
+    {
+        std::ofstream os("appleman_binary." + pmap.file_extension(), std::ios_base::binary);
+        pmap.write_binary(os);
+    }
+    {
+        std::ofstream os("appleman_ascii." + pmap.file_extension());
+        pmap.write_ascii(os);
     }
 
 }
