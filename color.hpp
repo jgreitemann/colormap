@@ -22,7 +22,7 @@ namespace color {
         color (T v = 0) : val(v) {}
 
         template <typename Float,
-                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+                  typename = std::enable_if_t<std::is_floating_point<Float>::value>>
         color (Float v) : val(v * depth()) {}
 
         color mix (color const& other, double mix) const {
@@ -41,20 +41,19 @@ namespace color {
         T val;
     };
 
-    template <typename T>
-    struct color<space::rgb, T> {
+    template <typename T, size_t N>
+    struct basic_color {
         static T depth () { return std::numeric_limits<T>::max(); }
 
-        color () : channels {{ {}, {}, {} }} {}
+        basic_color () : channels {{}} {}
 
-        color (T r, T g, T b) : channels {{ {r}, {g}, {b} }} {}
+        basic_color (std::array<color<space::grayscale,T>, N> const& chns)
+            : channels(chns) {}
 
-        template <typename Float,
-                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
-        color (Float r, Float g, Float b) : channels {{ {r}, {g}, {b}}} {}
-
-        color mix (color const& other, double mix) const {
-            color mixed;
+        template <typename Color,
+                  typename = std::enable_if_t<std::is_base_of<basic_color, Color>::value>>
+        Color mix (Color const& other, double mix) const {
+            Color mixed;
             for (size_t i = 0; i < channels.size(); ++i)
                 mixed.channels[i] = channels[i].mix(other.channels[i], mix);
             return mixed;
@@ -66,13 +65,26 @@ namespace color {
             return os;
         }
 
-        friend std::ostream & operator<< (std::ostream & os, color const& c) {
+        friend std::ostream & operator<< (std::ostream & os, basic_color const& c) {
             for (auto const& ch : c.channels)
                 os << ch;
             return os;
         }
     private:
-        std::array<color<space::grayscale,T>,3> channels;
+        std::array<color<space::grayscale,T>,N> channels;
+    };
+
+    template <typename T>
+    struct color<space::rgb, T> : public basic_color<T, 3> {
+        using Base = basic_color<T, 3>;
+
+        using Base::Base;
+        color (T r, T g, T b) : Base {{{ {r}, {g}, {b} }}} {}
+
+        template <typename Float,
+                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+        color (Float r, Float g, Float b) : Base {{{ {r}, {g}, {b} }}} {}
+
     };
 
 }
