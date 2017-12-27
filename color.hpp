@@ -9,7 +9,8 @@ namespace color {
 
     enum class space {
         grayscale,
-        rgb
+        rgb,
+        rgba
     };
 
     template <space cs, typename T = std::uint8_t>
@@ -84,6 +85,19 @@ namespace color {
         template <typename Float,
                   typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
         color (Float r, Float g, Float b) : Base {{{ {r}, {g}, {b} }}} {}
+
+    };
+
+    template <typename T>
+    struct color<space::rgba, T> : public basic_color<T, 4> {
+        using Base = basic_color<T, 4>;
+
+        using Base::Base;
+        color (T r, T g, T b, T a) : Base {{{ {r}, {g}, {b}, {a} }}} {}
+
+        template <typename Float,
+                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+        color (Float r, Float g, Float b, Float a) : Base {{{ {r}, {g}, {b}, {a} }}} {}
 
     };
 
