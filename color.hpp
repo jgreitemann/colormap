@@ -23,7 +23,7 @@ namespace color {
         color (T v = 0) : val(v) {}
 
         template <typename Float,
-                  typename = std::enable_if_t<std::is_floating_point<Float>::value>>
+                  typename = typename std::enable_if<std::is_floating_point<Float>::value>::type>
         color (Float v) : val(v * depth()) {}
 
         color mix (color const& other, double mix) const {
@@ -52,7 +52,7 @@ namespace color {
             : channels(chns) {}
 
         template <typename Color,
-                  typename = std::enable_if_t<std::is_base_of<basic_color, Color>::value>>
+                  typename = typename std::enable_if<std::is_base_of<basic_color, Color>::value>::type>
         Color mix (Color const& other, double mix) const {
             Color mixed;
             for (size_t i = 0; i < channels.size(); ++i)
@@ -83,7 +83,7 @@ namespace color {
         color (T r, T g, T b) : Base {{{ {r}, {g}, {b} }}} {}
 
         template <typename Float,
-                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+                  typename = typename std::enable_if<std::is_floating_point<Float>::value>::type>
         color (Float r, Float g, Float b) : Base {{{ {r}, {g}, {b} }}} {}
 
     };
@@ -96,7 +96,7 @@ namespace color {
         color (T r, T g, T b, T a) : Base {{{ {r}, {g}, {b}, {a} }}} {}
 
         template <typename Float,
-                  typename = typename std::enable_if_t<std::is_floating_point<Float>::value>>
+                  typename = typename std::enable_if<std::is_floating_point<Float>::value>::type>
         color (Float r, Float g, Float b, Float a) : Base {{{ {r}, {g}, {b}, {a} }}} {}
 
     };

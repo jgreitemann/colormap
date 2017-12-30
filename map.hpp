@@ -24,7 +24,9 @@ namespace color {
         map (std::initializer_list<std::pair<double,Color>> il) {
             range = { std::numeric_limits<double>::max(),
                       std::numeric_limits<double>::min() };
-            for (auto [val, c] : il) {
+            for (auto p : il) {
+                double & val = p.first;
+                Color & c = p.second;
                 if (range.first > val) range.first = val;
                 if (range.second < val) range.second = val;
                 supports[val] = c;
