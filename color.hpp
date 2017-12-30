@@ -71,7 +71,7 @@ namespace color {
                 os << ch;
             return os;
         }
-    private:
+    protected:
         std::array<color<space::grayscale,T>,N> channels;
     };
 
@@ -86,6 +86,7 @@ namespace color {
                   typename = typename std::enable_if<std::is_floating_point<Float>::value>::type>
         color (Float r, Float g, Float b) : Base {{{ {r}, {g}, {b} }}} {}
 
+        friend color<space::rgba, T>;
     };
 
     template <typename T>
@@ -94,6 +95,8 @@ namespace color {
 
         using Base::Base;
         color (T r, T g, T b, T a) : Base {{{ {r}, {g}, {b}, {a} }}} {}
+        color (color<space::rgb, T> const& rgb, T a = std::numeric_limits<T>::max())
+            : Base {{{ rgb.channels[0], rgb.channels[1], rgb.channels[2], {a} }}} {}
 
         template <typename Float,
                   typename = typename std::enable_if<std::is_floating_point<Float>::value>::type>
