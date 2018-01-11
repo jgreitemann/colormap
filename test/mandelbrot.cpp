@@ -1,31 +1,25 @@
 #include "colormap.hpp"
+#include "grid.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <complex>
 #include <fstream>
 #include <iostream>
 #include <utility>
-
-#include <boost/multi_array.hpp>
+#include <vector>
 
 
 int main () {
     size_t max_it = 1000;
     double bail_out = std::pow(2, 16);
-    auto dim = std::make_pair(701, 401);
-    auto canvas = std::make_pair(std::make_pair(-2.5,1.), std::make_pair(-1.,1.));
-    auto delta = std::make_pair((canvas.first.second - canvas.first.first)/(dim.first-1),
-                                (canvas.second.second - canvas.second.first)/(dim.second-1));
     auto func = [] (double x) { return pow(x, 0.1); };
-    auto pal = color::palettes.at("inferno").rescale(1, func(max_it));
-    auto black = pal(0.);
 
-    using color_t = typename decltype(pal)::color_type;
-    boost::multi_array<color_t,2> pixs(boost::extents[dim.second][dim.first]);
-    for (size_t j = 0; j < dim.second; ++j) {
-        for (size_t i = 0; i < dim.first; ++i) {
-            std::complex<double> c = {canvas.first.first + i * delta.first,
-                                      canvas.second.first + j * delta.second};
+    grid<2, major_order::col> g { {701, {-2.5, 1.}}, {401, {-1., 1.}} };
+    std::vector<double> vals;
+    vals.reserve(g.size());
+    std::transform(g.begin(), g.end(), std::back_inserter(vals), [&] (std::array<double,2> c_arr) {
+            std::complex<double> c { c_arr[0], c_arr[1] };
             std::complex<double> z = 0.;
             size_t it;
             for (it = 0; it < max_it && std::norm(z) < bail_out; ++it)
@@ -33,17 +27,13 @@ int main () {
             if (it < max_it) {
                 double log2_z = log(std::norm(z)) * 0.5 / log(2);
                 double nu = log(log2_z) / log(2);
-                pixs[j][i] = pal(func(it + 1 - nu));
+                return func(it + 1 - nu);
             } else {
-                pixs[j][i] = black;
+                return 0.;
             }
-        }
-    }
-
-    boost::array<typename decltype(pixs)::index,2> dims = {{1, dim.first * dim.second}};
-    pixs.reshape(dims);
-    auto flat_it = pixs.begin()->begin();
-    color::pixmap<decltype(flat_it)> pmap(flat_it, dim);
+        });
+    auto pal = color::palettes.at("inferno").rescale(1, func(max_it));
+    color::pixmap pmap(color::adapt_iterator(vals.begin(), pal), g.shape());
 
     {
         std::ofstream os("appleman_binary." + pmap.file_extension(), std::ios_base::binary);

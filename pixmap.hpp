@@ -17,6 +17,9 @@ namespace color {
         pixmap (ForwardIterator begin, shape_type shape)
             : begin(begin), shape(shape) {};
 
+        pixmap (ForwardIterator begin, std::array<size_t,2> const& alt_shape)
+            : begin(begin), shape{alt_shape[0], alt_shape[1]} {};
+
         std::ostream & write_ascii (std::ostream & os) const {
             ForwardIterator it(begin);
             os << header(false);
