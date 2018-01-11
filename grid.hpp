@@ -4,6 +4,7 @@
 #include <array>
 #include <initializer_list>
 #include <iterator>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 
@@ -21,6 +22,8 @@ struct grid {
     struct const_iterator {
         typedef std::array<T, dim> value_type;
         typedef long difference_type;
+        typedef value_type reference;
+        typedef std::unique_ptr<value_type> pointer;
         typedef std::bidirectional_iterator_tag iterator_category;
         const_iterator & operator++ () {
             if (order == major_order::row) {
@@ -80,11 +83,14 @@ struct grid {
             --(*this);
             return old;
         }
-        value_type operator* () const {
+        reference operator* () const {
             value_type res;
             std::transform(its.begin(), its.end(), res.begin(),
                            [] (auto it) { return *it; });
             return res;
+        }
+        pointer operator-> () const {
+            return pointer(new value_type(**this));
         }
         friend bool operator!= (const_iterator const& lhs, const_iterator const& rhs) {
             for (size_t i = 0; i < dim; ++i)
@@ -159,6 +165,8 @@ struct grid<1, order, T> {
     struct const_iterator {
         typedef T value_type;
         typedef long difference_type;
+        typedef T const& reference;
+        typedef T const* pointer;
         typedef std::random_access_iterator_tag iterator_category;
         const_iterator & operator++ () {
             ++i;
@@ -205,8 +213,11 @@ struct grid<1, order, T> {
         size_t size () const {
             return N;
         }
-        T operator* () const {
+        reference operator* () const {
             return x;
+        }
+        pointer operator-> () const {
+            return &x;
         }
         friend const_iterator operator+ (const_iterator const& it, difference_type j) {
             const_iterator cp(it);

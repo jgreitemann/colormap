@@ -1,64 +1,67 @@
 #pragma once
 
-#include "map.hpp"
-
 #include <memory>
+#include <utility>
 
 
-namespace color {
+namespace itadpt {
 
-    template <typename BaseIterator, typename Color>
+    template <typename BaseIterator, typename Functor>
     struct map_iterator_adapter : public BaseIterator {
-        typedef Color value_type;
-        typedef map<Color> map_type;
-
-        map_iterator_adapter (BaseIterator it, map_type const& pal)
-            : BaseIterator(it), palette(pal) {}
-
-        Color operator* () const {
-            return palette(**((BaseIterator *)this));
-        }
-
-        std::unique_ptr<Color> const operator-> () const {
-            return std::unique_ptr<Color>(new Color(palette(**((BaseIterator *)this))));
-        }
-
     private:
-        map_type const& palette;
+        Functor & functor;
+    public:
+        typedef typename BaseIterator::value_type domain_type;
+        typedef decltype(functor(domain_type())) value_type;
+
+        map_iterator_adapter (BaseIterator it, Functor & f)
+            : BaseIterator(it), functor(f) {}
+
+        value_type operator* () const {
+            return functor(**((BaseIterator *)this));
+        }
+
+        std::unique_ptr<value_type> const operator-> () const {
+            return std::unique_ptr<value_type>(new value_type(functor(**((BaseIterator *)this))));
+        }
     };
 
-    template <typename BaseIterator, typename Color>
-    map_iterator_adapter<BaseIterator,Color>
-    adapt_iterator (BaseIterator it, map<Color> const& pal) {
-        return map_iterator_adapter<BaseIterator,Color>(it, pal);
+
+    template <typename BaseIterator, typename Functor>
+    map_iterator_adapter<BaseIterator, Functor>
+    map_iterator (BaseIterator it, Functor & f) {
+        return map_iterator_adapter<BaseIterator, Functor>(it, f);
     }
 
-    template <typename Container, typename Palette>
-    struct color_mapped {
-        typedef Palette map_type;
-        typedef typename Palette::color_type value_type;
+    template <typename Container, typename Functor>
+    struct mapped {
         typedef Container container_type;
-        typedef map_iterator_adapter<typename Container::const_iterator, typename Palette::color_type> const_iterator;
+        typedef Functor map_type;
+        typedef map_iterator_adapter<typename Container::const_iterator, Functor> const_iterator;
+        typedef typename const_iterator::value_type value_type;
 
-        color_mapped (Container const& c, Palette const& pal)
-            : container(c), palette(pal) {}
+        mapped (Container const& c, Functor & f)
+            : container(c), functor(f) {}
 
         const_iterator begin () const {
-            return adapt_iterator(container.begin(), palette);
+            return map_iterator(container.begin(), functor);
         }
 
         const_iterator end () const {
-            return adapt_iterator(container.end(), palette);
+            return map_iterator(container.end(), functor);
         }
 
+        size_t size () const {
+            container.size();
+        }
     private:
         Container const& container;
-        map_type const& palette;
+        Functor & functor;
     };
 
-    template <typename Container, typename Palette>
-    color_mapped<Container,Palette> map_color (Container const& c, Palette const& pal) {
-        return color_mapped<Container,Palette>(c, pal);
+    template <typename Container, typename Functor>
+    mapped<Container,Functor> map (Container const& c, Functor & f) {
+        return mapped<Container, Functor>(c, f);
     }
 
 }
