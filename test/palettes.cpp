@@ -1,37 +1,33 @@
 #include "colormap.hpp"
+#include "grid.hpp"
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
 
 int main () {
-    size_t N = 400;
     size_t M = 25;
-
-    std::vector<double> vals(N);
-    for (size_t i = 0; i < N; ++i)
-        vals[i] = 1. * i / (N-1);
-
-    std::string header = [&] {
-        std::stringstream ss;
-        ss << "P6\n"
-           << N << ' ' << M * color::palettes.size() << '\n'
-           << size_t(decltype(color::palettes)::mapped_type::color_type::depth())
-           << '\n';
-        return ss.str();
-    } ();
-    std::ofstream os("palettes.ppm");
-    os.write(header.c_str(), header.size());
-
+    std::vector<std::string> names;
+    std::vector<decltype(color::palettes)::mapped_type> pals;
     for (auto & [name, pal] : color::palettes) {
-        std::cout << name << std::endl;
-        for (size_t j = 0; j < M; ++j) {
-            for (auto pix : color::map_color(vals, pal)) {
-                pix.write(os);
-            }
-        }
+        names.push_back(name);
+        pals.push_back(pal);
     }
+
+    grid<2, major_order::col> g {
+        {400, {0., 1.}},
+        {M * names.size(), {0., names.size() - 1e-6}}
+    };
+
+    auto lamb = [&] (auto coord) {
+        size_t i = size_t(coord[1]);
+        return pals[i](coord[0]);
+    };
+    auto pix = itadpt::map(g, lamb);
+
+    color::pixmap pmap(pix.begin(), g.shape());
+    std::ofstream os("palettes." + pmap.file_extension());
+    pmap.write_binary(os);
 }
