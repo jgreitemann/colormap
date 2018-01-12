@@ -30,7 +30,8 @@ int main () {
         }
     };
     auto pal = color::palettes.at("inferno").rescale(1, func(max_it));
-    auto pix = itadpt::map(itadpt::map(g, mandelbrot), pal);
+    auto val = itadpt::map(g, mandelbrot);
+    auto pix = itadpt::map(val, pal);
     color::pixmap pmap(pix.begin(), g.shape());
 
     {
