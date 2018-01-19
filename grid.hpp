@@ -83,6 +83,22 @@ struct grid {
             --(*this);
             return old;
         }
+        template <size_t d, typename = typename std::enable_if<(d < dim)>::type>
+        const_iterator & move_forward () {
+            if (order == major_order::row)
+                its.rbegin()[d].move_forward();
+            else
+                its.begin()[d].move_forward();
+            return *this;
+        }
+        template <size_t d, typename = typename std::enable_if<(d < dim)>::type>
+        const_iterator & move_backward () {
+            if (order == major_order::row)
+                its.rbegin()[d].move_backward();
+            else
+                its.begin()[d].move_backward();
+            return *this;
+        }
         reference operator* () const {
             value_type res;
             std::transform(its.begin(), its.end(), res.begin(),
@@ -187,6 +203,19 @@ struct grid<1, order, T> {
             const_iterator old(*this);
             --(*this);
             return old;
+        }
+        template <size_t d = 0, typename = typename std::enable_if<(d == 0)>::type>
+        const_iterator & move_forward () {
+            ++(*this);
+            if (is_end())
+                reset();
+            return *this;
+        }
+        template <size_t d = 0, typename = typename std::enable_if<(d == 0)>::type>
+        const_iterator & move_backward () {
+            if (is_begin())
+                return set_to_end();
+            return --(*this);
         }
         const_iterator & operator+= (difference_type j) {
             i += j;
