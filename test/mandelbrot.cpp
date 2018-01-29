@@ -32,7 +32,7 @@ int main () {
     auto pal = color::palettes.at("inferno").rescale(1, func(max_it));
     auto val = itadpt::map(g, mandelbrot);
     auto pix = itadpt::map(val, pal);
-    color::pixmap pmap(pix.begin(), g.shape());
+    color::pixmap<decltype(pix.begin())> pmap(pix.begin(), g.shape());
 
     {
         std::ofstream os("appleman_binary." + pmap.file_extension(), std::ios_base::binary);

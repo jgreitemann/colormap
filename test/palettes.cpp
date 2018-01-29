@@ -11,9 +11,9 @@ int main () {
     size_t M = 25;
     std::vector<std::string> names;
     std::vector<decltype(color::palettes)::mapped_type> pals;
-    for (auto & [name, pal] : color::palettes) {
-        names.push_back(name);
-        pals.push_back(pal);
+    for (auto pair : color::palettes) {
+        names.push_back(pair.first);
+        pals.push_back(pair.second);
     }
 
     grid<2, major_order::col> g {
@@ -27,7 +27,7 @@ int main () {
     };
     auto pix = itadpt::map(g, lamb);
 
-    color::pixmap pmap(pix.begin(), g.shape());
+    color::pixmap<decltype(pix.begin())> pmap(pix.begin(), g.shape());
     std::ofstream os("palettes." + pmap.file_extension());
     pmap.write_binary(os);
 }
