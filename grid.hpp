@@ -117,6 +117,24 @@ struct grid {
         friend bool operator== (const_iterator const& lhs, const_iterator const& rhs) {
             return !(lhs != rhs);
         }
+        friend bool operator< (const_iterator const& lhs, const_iterator const& rhs) {
+            if (order == major_order::row) {
+                return std::lexicographical_compare(lhs.its.begin(), lhs.its.end(),
+                                                    rhs.its.begin(), rhs.its.end());
+            } else {
+                return std::lexicographical_compare(lhs.its.rbegin(), lhs.its.rend(),
+                                                    rhs.its.rbegin(), rhs.its.rend());
+            }
+        }
+        friend bool operator> (const_iterator const& lhs, const_iterator const& rhs) {
+            return !(lhs < rhs || lhs == rhs);
+        }
+        friend bool operator<= (const_iterator const& lhs, const_iterator const& rhs) {
+            return !(lhs > rhs);
+        }
+        friend bool operator>= (const_iterator const& lhs, const_iterator const& rhs) {
+            return !(lhs < rhs);
+        }
         friend grid;
     private:
         const_iterator () : its{} {};
@@ -263,6 +281,18 @@ struct grid<1, order, T> {
         }
         friend bool operator!= (const_iterator const& lhs, const_iterator const& rhs) {
             return !(lhs == rhs);
+        }
+        friend bool operator< (const_iterator const& lhs, const_iterator const& rhs) {
+            return lhs.i < rhs.i;
+        }
+        friend bool operator> (const_iterator const& lhs, const_iterator const& rhs) {
+            return lhs.i > rhs.i;
+        }
+        friend bool operator<= (const_iterator const& lhs, const_iterator const& rhs) {
+            return !(lhs > rhs);
+        }
+        friend bool operator>= (const_iterator const& lhs, const_iterator const& rhs) {
+            return !(lhs < rhs);
         }
         template <size_t, major_order, typename, typename>
         friend struct grid;
