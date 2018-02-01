@@ -1,28 +1,46 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
+#include "doctest.h"
 #include "grid.hpp"
 
-#include <iostream>
-#include <iomanip>
 
-
-template <typename T, size_t N>
-std::ostream & operator<< (std::ostream & os, std::array<T,N> const & arr) {
-    os << '{';
-    for (T const& x : arr)
-        os << std::setprecision(3) << x << ",\t";
-    os << '}';
-    return os;
+TEST_CASE("1d-grid") {
+    double dx = 10./41;
+    double x = 0.;
+    for (double xp : grid<1> {42, {0, 10}}) {
+        CHECK(xp == doctest::Approx(x));
+        x += dx;
+    }
 }
 
-template <size_t dim, major_order order, typename T>
-std::ostream & operator<< (std::ostream & os, grid<dim, order, T> const & g) {
-    for (auto x : g)
-        os << x << '\n';
-    os << "----------------";
-    return os;
+TEST_CASE("2d-grid-row-major") {
+    double dx = 10./3;
+    double dy = 10./4;
+    double x = 0.;
+    double y = 0.;
+    for (auto p : grid<2> {{4, {0, 10}}, {5, {0, 10}}}) {
+        CHECK(p[0] == doctest::Approx(x));
+        CHECK(p[1] == doctest::Approx(y));
+        y += dy;
+        if (y > doctest::Approx(10.)) {
+            y = 0.;
+            x += dx;
+        }
+    }
 }
 
-int main () {
-    std::cout << grid<1> {11, {0, 10}} << std::endl;
-    std::cout << grid<2> {{4, {0, 10}}, {5, {0, 4}}} << std::endl;
-    std::cout << grid<2, major_order::col> {{4, {0, 10}}, {5, {0, 4}}} << std::endl;
+TEST_CASE("2d-grid-col-major") {
+    double dx = 10./3;
+    double dy = 10./4;
+    double x = 0.;
+    double y = 0.;
+    for (auto p : grid<2, major_order::col> {{4, {0, 10}}, {5, {0, 10}}}) {
+        CHECK(p[0] == doctest::Approx(x));
+        CHECK(p[1] == doctest::Approx(y));
+        x += dx;
+        if (x > doctest::Approx(10.)) {
+            x = 0.;
+            y += dy;
+        }
+    }
 }
