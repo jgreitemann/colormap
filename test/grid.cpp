@@ -44,3 +44,27 @@ TEST_CASE("2d-grid-col-major") {
         }
     }
 }
+
+TEST_CASE("ordering-row-major") {
+    grid<2> g {{4, {0, 10}}, {5, {0, 10}}};
+    for (auto bigger = g.begin(); bigger != g.end(); ++bigger) {
+        for (auto smaller = g.begin(); smaller != bigger; ++smaller) {
+            CHECK(smaller < bigger);
+            CHECK(smaller <= bigger);
+            CHECK(bigger > smaller);
+            CHECK(bigger >= smaller);
+        }
+    }
+}
+
+TEST_CASE("ordering-col-major") {
+    grid<2, major_order::col> g {{4, {0, 10}}, {5, {0, 10}}};
+    for (auto bigger = g.begin(); bigger != g.end(); ++bigger) {
+        for (auto smaller = g.begin(); smaller != bigger; ++smaller) {
+            CHECK(smaller < bigger);
+            CHECK(smaller <= bigger);
+            CHECK(bigger > smaller);
+            CHECK(bigger >= smaller);
+        }
+    }
+}
