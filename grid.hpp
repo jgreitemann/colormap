@@ -18,6 +18,7 @@ template <size_t dim, major_order order = major_order::row, typename T = double,
           typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
 struct grid {
     using base_grid = grid<1, major_order::row, T>;
+    using range_t = typename base_grid::range_t;
 
     struct const_iterator {
         typedef std::array<T, dim> value_type;
@@ -173,6 +174,13 @@ struct grid {
         return s;
     }
 
+    std::array<range_t, dim> ranges () const {
+        std::array<range_t, dim> s;
+        std::transform(begin_.its.begin(), begin_.its.end(), s.begin(),
+                       [] (auto const& it) { return it.range(); });
+        return s;
+    }
+
     grid (std::initializer_list<base_grid> il) : begin_{} {
         if (il.size() != dim)
             throw std::runtime_error("number of grids does not match dimension");
@@ -260,6 +268,9 @@ struct grid<1, order, T> {
         size_t size () const {
             return N;
         }
+        range_t range () const {
+            return {x - i * dx, x + (N - 1 - i) * dx};
+        }
         reference operator* () const {
             return x;
         }
@@ -324,6 +335,10 @@ struct grid<1, order, T> {
 
     size_t size () const {
         return N;
+    }
+
+    range_t range () const {
+        return { *front(), *back() };
     }
 
 private:
