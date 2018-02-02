@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <functional>
 #include <initializer_list>
 #include <iterator>
 #include <memory>
@@ -18,6 +19,7 @@ template <size_t dim, major_order order = major_order::row, typename T = double,
           typename = typename std::enable_if<std::is_floating_point<T>::value>::type>
 struct grid {
     using base_grid = grid<1, major_order::row, T>;
+    using base_iterator = typename base_grid::const_iterator;
     using range_t = typename base_grid::range_t;
 
     struct const_iterator {
@@ -136,10 +138,14 @@ struct grid {
         friend bool operator>= (const_iterator const& lhs, const_iterator const& rhs) {
             return !(lhs < rhs);
         }
+        bool in_bulk () const {
+            return std::all_of(its.begin(), its.end(),
+                               std::mem_fn(&base_iterator::in_bulk));
+        }
         friend grid;
     private:
         const_iterator () : its{} {};
-        std::array<typename base_grid::const_iterator, dim> its;
+        std::array<base_iterator, dim> its;
     };
 
     const_iterator begin () const {
@@ -258,6 +264,9 @@ struct grid<1, order, T> {
         }
         bool is_end () const {
             return i == N;
+        }
+        bool in_bulk () const {
+            return i > 0 && i < N-1;
         }
         const_iterator & reset () {
             return *this -= i;
