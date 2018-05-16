@@ -163,7 +163,7 @@ namespace itadpt {
         }
 
         size_t size () const {
-            container.size();
+            return container.size();
         }
     private:
         Container const& container;

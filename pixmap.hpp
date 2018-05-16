@@ -50,6 +50,8 @@ namespace color {
             case space::grayscale: return "pgm";
             case space::rgb:       return "ppm";
             }
+            throw std::runtime_error("no extension for color space");
+            return "";
         }
 
     private:
@@ -61,6 +63,8 @@ namespace color {
             case space::grayscale: return binary ? 5 : 2;
             case space::rgb:       return binary ? 6 : 3;
             }
+            throw std::runtime_error("no magic number for color space");
+            return "";
         }
 
         std::string header (bool binary) const {
