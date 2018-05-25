@@ -347,6 +347,20 @@ namespace color {
             }
         },
         {
+            "rdwhbu",
+            map<rgb> {
+                { 0.0, rgb {0xb2, 0x18, 0x2b}},
+                { 1.0, rgb {0xd6, 0x60, 0x4d}},
+                { 2.0, rgb {0xf4, 0xa5, 0x82}},
+                { 3.0, rgb {0xfd, 0xdb, 0xc7}},
+                { 3.5, rgb {0xff, 0xff, 0xff}},
+                { 4.0, rgb {0xd1, 0xe5, 0xf0}},
+                { 5.0, rgb {0x92, 0xc5, 0xde}},
+                { 6.0, rgb {0x43, 0x93, 0xc3}},
+                { 7.0, rgb {0x21, 0x66, 0xac}},
+            }
+        },
+        {
             "rdgy",
             map<rgb> {
                 rgb {0xb2, 0x18, 0x2b},
