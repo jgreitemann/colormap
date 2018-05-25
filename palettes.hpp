@@ -123,6 +123,19 @@ namespace color {
             }
         },
         {
+            "whgnbu",
+            map<rgb> {
+                rgb {0xff, 0xff, 0xff},
+                rgb {0xe0, 0xf3, 0xdb},
+                rgb {0xcc, 0xeb, 0xc5},
+                rgb {0xa8, 0xdd, 0xb5},
+                rgb {0x7b, 0xcc, 0xc4},
+                rgb {0x4e, 0xb3, 0xd3},
+                rgb {0x2b, 0x8c, 0xbe},
+                rgb {0x08, 0x58, 0x9e},
+            }
+        },
+        {
             "gnpu",
             map<rgb> {
                 rgb {0x39, 0x63, 0x53},
