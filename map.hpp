@@ -26,11 +26,15 @@ namespace color {
                       std::numeric_limits<double>::min() };
             for (auto p : il) {
                 double & val = p.first;
-                Color & c = p.second;
                 if (range.first > val) range.first = val;
                 if (range.second < val) range.second = val;
-                supports[val] = c;
             }
+            for (auto p : il) {
+                double & val = p.first;
+                Color & c = p.second;
+                supports[(val - range.first) / (range.second - range.first)] = c;
+            }
+            range = {0., 1.};
         }
 
         map rescale (double x_min, double x_max) const {
