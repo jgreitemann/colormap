@@ -64,7 +64,7 @@ namespace color {
             case space::rgb:       return binary ? 6 : 3;
             }
             throw std::runtime_error("no magic number for color space");
-            return "";
+            return -1;
         }
 
         std::string header (bool binary) const {
