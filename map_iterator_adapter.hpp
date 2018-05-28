@@ -26,11 +26,11 @@ namespace itadpt {
             : base(it), functor(f) {}
 
         reference operator* () const {
-            return functor(**((BaseIterator *)this));
+            return functor(*base);
         }
 
         pointer operator-> () const {
-            return pointer(new value_type(functor(**((BaseIterator *)this))));
+            return pointer(new value_type(functor(*base)));
         }
 
         friend bool operator== (map_iterator_adapter const& lhs, map_iterator_adapter const& rhs) {
