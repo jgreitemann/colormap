@@ -148,6 +148,8 @@ struct grid {
         std::array<base_iterator, dim> its;
     };
 
+    using grid_point_type = typename const_iterator::value_type;
+
     const_iterator begin () const {
         return begin_;
     }
