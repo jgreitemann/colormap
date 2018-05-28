@@ -13,24 +13,31 @@ namespace itadpt {
     struct map_iterator_adapter {
     private:
         BaseIterator base;
-        Functor & functor;
+        Functor * functor_ptr; // replace by
+                               // std::optional<std::reference_wrapper<Functor>
+                               // once C++17 can be required
+
     public:
         typedef typename std::iterator_traits<BaseIterator>::value_type domain_type;
-        typedef decltype(functor(domain_type())) value_type;
+        typedef decltype((*functor_ptr)(domain_type())) value_type;
         typedef typename std::iterator_traits<BaseIterator>::difference_type difference_type;
         typedef value_type reference;
         typedef std::unique_ptr<value_type> pointer;
         typedef typename std::iterator_traits<BaseIterator>::iterator_category iterator_category;
 
+        template <typename Tag = iterator_category,
+                  typename = typename std::enable_if<std::is_base_of<std::forward_iterator_tag, Tag>::value>::type>
+        map_iterator_adapter () : base(), functor_ptr(nullptr) {}
+
         map_iterator_adapter (BaseIterator it, Functor & f)
-            : base(it), functor(f) {}
+            : base(it), functor_ptr(&f) {}
 
         reference operator* () const {
-            return functor(*base);
+            return (*functor_ptr)(*base);
         }
 
         pointer operator-> () const {
-            return pointer(new value_type(functor(*base)));
+            return pointer(new value_type((*functor_ptr)(*base)));
         }
 
         friend bool operator== (map_iterator_adapter const& lhs, map_iterator_adapter const& rhs) {
