@@ -14,6 +14,7 @@ int main () {
     for (auto pair : color::palettes) {
         names.push_back(pair.first);
         pals.push_back(pair.second);
+        std::cout << names.back() << std::endl;
     }
 
     grid<2, major_order::col> g {
