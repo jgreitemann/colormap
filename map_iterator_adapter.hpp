@@ -36,7 +36,9 @@ namespace itadpt {
 
     public:
         typedef typename std::iterator_traits<BaseIterator>::value_type domain_type;
-        typedef decltype((*functor_ptr)(domain_type())) value_type;
+        typedef std::result_of_t<Functor(domain_type)> value_type; // replace by
+                                                                   // std::invoke_result
+                                                                   // in C++17
         typedef typename std::iterator_traits<BaseIterator>::difference_type difference_type;
         typedef value_type reference;
         typedef std::unique_ptr<value_type> pointer;
