@@ -66,8 +66,9 @@ namespace color {
             switch (color_type::color_space()) {
             case space::grayscale: return "pgm";
             case space::rgb:       return "ppm";
+            default:
+                throw std::runtime_error("no extension for color space");
             }
-            throw std::runtime_error("no extension for color space");
             return "";
         }
 
@@ -79,8 +80,9 @@ namespace color {
             switch (color_type::color_space()) {
             case space::grayscale: return binary ? 5 : 2;
             case space::rgb:       return binary ? 6 : 3;
+            default:
+                throw std::runtime_error("no magic number for color space");
             }
-            throw std::runtime_error("no magic number for color space");
             return -1;
         }
 
