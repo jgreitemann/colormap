@@ -1,5 +1,5 @@
 // colormap -- color palettes, map iterators, grids, and PPM export
-// Copyright (C) 2018  Jonas Greitemann
+// Copyright (C) 2018-2019  Jonas Greitemann
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

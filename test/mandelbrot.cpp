@@ -1,5 +1,5 @@
 // colormap -- color palettes, map iterators, grids, and PPM export
-// Copyright (C) 2018  Jonas Greitemann
+// Copyright (C) 2018-2019  Jonas Greitemann
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ int main () {
 
     // set up the functor to be visualized on the grid, e.g. the mandelbrot set
     auto mandelbrot = [] (grid_point_t c_arr) {
-        // constants 
+        // constants
         const size_t max_it = 1000;
         const double bail_out = std::pow(2, 16);
 
