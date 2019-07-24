@@ -174,18 +174,18 @@ namespace itadpt {
     struct mapped {
         typedef Container container_type;
         typedef Functor map_type;
-        typedef map_iterator_adapter<typename Container::const_iterator, Functor> const_iterator;
+        typedef map_iterator_adapter<decltype(std::begin(std::declval<Container const&>())), Functor> const_iterator;
         typedef typename const_iterator::value_type value_type;
 
         mapped (Container const& c, Functor & f)
             : container(c), functor(f) {}
 
         const_iterator begin () const {
-            return map_iterator(container.begin(), functor);
+            return map_iterator(std::begin(container), functor);
         }
 
         const_iterator end () const {
-            return map_iterator(container.end(), functor);
+            return map_iterator(std::end(container), functor);
         }
 
         size_t size () const {
