@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "color.hpp"
-#include "map.hpp"
-
 #include <map>
 #include <string>
 
+#include <colormap/color.hpp>
+#include <colormap/map.hpp>
 
-namespace color {
+
+namespace colormap {
 
     namespace {
         using gray = color<space::grayscale>;

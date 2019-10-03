@@ -17,15 +17,15 @@
 
 #pragma once
 
-#include "color.hpp"
-
 #include <initializer_list>
 #include <limits>
 #include <map>
 #include <utility>
 
+#include <colormap/color.hpp>
 
-namespace color {
+
+namespace colormap {
 
     template <typename Color>
     struct map {

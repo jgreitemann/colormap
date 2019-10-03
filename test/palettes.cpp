@@ -15,20 +15,24 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include "colormap.hpp"
-#include "grid.hpp"
-
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include <colormap/grid.hpp>
+#include <colormap/palettes.hpp>
+#include <colormap/pixmap.hpp>
+#include <colormap/itadpt/map_iterator_adapter.hpp>
+
+
+using namespace colormap;
 
 int main () {
     size_t M = 25;
     std::vector<std::string> names;
-    std::vector<decltype(color::palettes)::mapped_type> pals;
-    for (auto pair : color::palettes) {
+    std::vector<decltype(palettes)::mapped_type> pals;
+    for (auto pair : palettes) {
         names.push_back(pair.first);
         pals.push_back(pair.second);
         std::cout << names.back() << std::endl;
@@ -45,7 +49,7 @@ int main () {
     };
     auto pix = itadpt::map(g, lamb);
 
-    color::pixmap<decltype(pix.begin())> pmap(pix.begin(), g.shape());
+    pixmap<decltype(pix.begin())> pmap(pix.begin(), g.shape());
     std::ofstream os("palettes." + pmap.file_extension());
     pmap.write_binary(os);
 }

@@ -1,5 +1,4 @@
-include_directories(..)
-include_directories(doctest)
+include_directories(.)
 
 add_executable(palettes palettes.cpp)
 add_test(palettes palettes)

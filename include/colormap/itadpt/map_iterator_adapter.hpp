@@ -23,6 +23,7 @@
 #include <utility>
 
 
+namespace colormap {
 namespace itadpt {
 
     template <typename BaseIterator, typename Functor,
@@ -201,4 +202,5 @@ namespace itadpt {
         return mapped<Container, Functor>(c, f);
     }
 
+}
 }

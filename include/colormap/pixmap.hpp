@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "color.hpp"
-
 #include <iostream>
 #include <iterator>
 #include <sstream>
 
+#include <colormap/color.hpp>
 
-namespace color {
+
+namespace colormap {
 
     template <typename ForwardIterator>
     struct pixmap {

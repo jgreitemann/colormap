@@ -4,6 +4,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 enable_testing()
 
-include_directories(.)
+include_directories(include)
 
 add_subdirectory(test)
+
+install(DIRECTORY include/colormap DESTINATION include)

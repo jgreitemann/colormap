@@ -15,9 +15,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include "colormap.hpp"
-#include "grid.hpp"
-
 #include <algorithm>
 #include <cmath>
 #include <complex>
@@ -26,6 +23,14 @@
 #include <utility>
 #include <vector>
 
+#include <colormap/color.hpp>
+#include <colormap/grid.hpp>
+#include <colormap/palettes.hpp>
+#include <colormap/pixmap.hpp>
+#include <colormap/itadpt/map_iterator_adapter.hpp>
+
+
+using namespace colormap;
 
 int main () {
     // set up the grid: 701 x 401 grid points (pixels) representing the region
@@ -68,7 +73,7 @@ int main () {
     double max = *std::max_element(val.begin(), val.end());
 
     // get a colormap and rescale it
-    auto pal = color::palettes.at("inferno").rescale(1, max);
+    auto pal = palettes.at("inferno").rescale(1, max);
     // and use it to map the values to colors
     auto pix = itadpt::map(val, pal);
 
@@ -76,7 +81,7 @@ int main () {
     // inferred from color type of pix. "inferno" is an RGB palette, so `pmap`
     // will represent a PPM image. For a grayscale colormap, it would result in
     // a PGM image.
-    color::pixmap<decltype(pix.begin())> pmap(pix.begin(), g.shape());
+    pixmap<decltype(pix.begin())> pmap(pix.begin(), g.shape());
 
     /* binary output */ {
         std::ofstream os("appleman_binary." + pmap.file_extension(),

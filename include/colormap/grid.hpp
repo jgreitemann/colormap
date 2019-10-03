@@ -27,6 +27,8 @@
 #include <type_traits>
 
 
+namespace colormap {
+
 enum class major_order {
     row,
     col
@@ -373,3 +375,5 @@ private:
     size_t N;
     const_iterator begin_;
 };
+
+}

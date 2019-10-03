@@ -15,11 +15,16 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include "colormap.hpp"
-
 #include <array>
 #include <fstream>
 
+#include <colormap/map.hpp>
+#include <colormap/itadpt/map_iterator_adapter.hpp>
+#include <colormap/palettes.hpp>
+#include <colormap/pixmap.hpp>
+
+
+using namespace colormap;
 
 int main () {
     // float buf[100];
@@ -29,7 +34,7 @@ int main () {
     }
 
     // get a colormap and rescale it
-    auto pal = color::palettes.at("inferno").rescale(0., 100.);
+    auto pal = palettes.at("inferno").rescale(0., 100.);
     // and use it to map the values to colors
     auto pix = itadpt::map(buf, pal);
 
@@ -37,7 +42,7 @@ int main () {
     // inferred from color type of pix. "inferno" is an RGB palette, so `pmap`
     // will represent a PPM image. For a grayscale colormap, it would result in
     // a PGM image.
-    color::pixmap<decltype(pix.begin())> pmap(pix.begin(), std::make_pair(10, 10));
+    pixmap<decltype(pix.begin())> pmap(pix.begin(), std::make_pair(10, 10));
 
     std::ofstream os("buf." + pmap.file_extension(),
                      std::ios_base::binary);

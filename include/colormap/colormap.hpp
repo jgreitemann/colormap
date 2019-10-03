@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include "color.hpp"
-#include "map.hpp"
-#include "map_iterator_adapter.hpp"
-#include "pixmap.hpp"
+#include <colormap/color.hpp>
+#include <colormap/map.hpp>
+#include <colormap/palettes.hpp>
+#include <colormap/pixmap.hpp>
 
-#include "palettes.hpp"
+#include <colormap/itadpt/map_iterator_adapter.hpp>

@@ -22,7 +22,7 @@
 #include <iostream>
 #include <limits>
 
-namespace color {
+namespace colormap {
 
     enum class space {
         grayscale,

@@ -17,9 +17,12 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
-#include "doctest.h"
-#include "grid.hpp"
+#include <doctest/doctest.h>
 
+#include <colormap/grid.hpp>
+
+
+using namespace colormap;
 
 TEST_CASE("1d-grid") {
     double dx = 10./41;
