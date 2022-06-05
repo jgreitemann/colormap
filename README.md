@@ -28,6 +28,24 @@ independent from this application. It's components are split amongs several head
   over `color`s to disk in PPM (or PGM) format, both in binary, and in ASCII
   form.
 
+Instalation
+-----------
+To install colormaps use the following commands: 
+```
+$ git clone https://github.com/JulianWww/colormap
+$ mkdir build && cd build
+$ cmake ..
+$ make install
+```
+than include using:
+```
+find_package(colormap INTERFACE)
+```
+and add as a library to your project.
+Tested for:
+ - Unix
+
+
 
 Using colormaps
 ---------------
