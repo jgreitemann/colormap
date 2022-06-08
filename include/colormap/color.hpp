@@ -52,6 +52,9 @@ namespace colormap {
             return os.write(reinterpret_cast<char const *>(&val), sizeof(T));
         }
 
+        const T& getValue() const { return val; }
+        T& getValue() { return val; }
+
         friend std::ostream & operator<< (std::ostream & os, color const& c) {
             os << long(c.val) << ' ';
             return os;
@@ -91,6 +94,8 @@ namespace colormap {
             return os;
         }
     protected:
+        color<space::grayscale,T>& getColor(size_t idx) { return channels[idx]; }
+        const color<space::grayscale,T>& getColor(size_t idx) const  { return channels[idx]; }
         std::array<color<space::grayscale,T>,N> channels;
     };
 
@@ -106,6 +111,13 @@ namespace colormap {
         color (Float r, Float g, Float b) : Base {{{ {r}, {g}, {b} }}} {}
 
         friend color<space::rgba, T>;
+
+              color<space::grayscale,T>& getRed()         { return Base::getColor(0); }
+        const color<space::grayscale,T>& getRed()   const { return Base::getColor(0); }
+              color<space::grayscale,T>& getGreen()       { return Base::getColor(1); }
+        const color<space::grayscale,T>& getGreen() const { return Base::getColor(1); }
+              color<space::grayscale,T>& getBlue()        { return Base::getColor(2); }
+        const color<space::grayscale,T>& getBlue()  const { return Base::getColor(2); }
     };
 
     template <typename T>
@@ -121,6 +133,14 @@ namespace colormap {
                   typename = typename std::enable_if<std::is_floating_point<Float>::value>::type>
         color (Float r, Float g, Float b, Float a) : Base {{{ {r}, {g}, {b}, {a} }}} {}
 
+              color<space::grayscale,T>& getRed()          { return Base::getColor(0); }
+        const color<space::grayscale,T>& getRed()    const { return Base::getColor(0); }
+              color<space::grayscale,T>& getGreen()        { return Base::getColor(1); }
+        const color<space::grayscale,T>& getGreen()  const { return Base::getColor(1); }
+              color<space::grayscale,T>& getBlue()         { return Base::getColor(2); }
+        const color<space::grayscale,T>& getBlue()   const { return Base::getColor(2); }
+              color<space::grayscale,T>& getAlpha()        { return Base::getColor(3); }
+        const color<space::grayscale,T>& getAlpha()  const { return Base::getColor(3); }
     };
 
 }
